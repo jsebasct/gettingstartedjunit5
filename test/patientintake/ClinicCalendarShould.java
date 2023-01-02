@@ -1,18 +1,31 @@
 package patientintake;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ClinicCalendarShould {
 
+   private ClinicCalendar calendar;
+
+   @BeforeEach
+   public void init() {
+      calendar = new ClinicCalendar(LocalDate.of(2023, 1, 2));
+//      ClinicCalendar calendar = new ClinicCalendar(LocalDate.now());
+   }
+
    @Test
    void allowEntryOfAnAppointment() {
-      ClinicCalendar calendar = new ClinicCalendar();
       calendar.addAppointment("Jim", "Weaver", "avery",
          "09/01/2018 2:00 pm");
       List<PatientAppointment> appointments = calendar.getAppointments();
@@ -29,4 +42,30 @@ class ClinicCalendarShould {
                  .format(DateTimeFormatter.ofPattern("M/d/yyyy hh:mm a", Locale.US)));
    }
 
+   @Test
+   void returnTrueForHasAppointmentsIfThereAreAppointments() {
+      calendar.addAppointment("Jim",
+                      "Weaver", "avery",
+                      "09/01/2018 2:00 pm");
+      assertTrue(calendar.hasAppointment(LocalDate.of(2018, 9, 1)));
+   }
+
+   @Test
+   void returnFalseForHasAppointmentsIfThereAreNoAppointments() {
+      assertFalse(calendar.hasAppointment(LocalDate.of(2018, 9, 1)));
+   }
+
+   @Test
+   void returnCurrentDaysAppointments() {
+      calendar.addAppointment("Jim", "Weaver", "avery",
+              "01/02/2023 2:00 pm");
+      calendar.addAppointment("Jim", "Weaver", "avery",
+              "01/02/2023 3:00 pm");
+      calendar.addAppointment("Jim", "Weaver", "avery",
+              "01/01/2023 2:00 pm");
+
+      List<PatientAppointment> todayAppoints = calendar.getTodayAppointments();
+      assertEquals(2, todayAppoints.size());
+//      assertIterableEquals(calendar.getAppointments(), calendar.getTodayAppointments());
+   }
 }
