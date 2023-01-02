@@ -1,5 +1,6 @@
 package patientintake;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -7,19 +8,30 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("DateTimeConverter should")
 class DateTimeConverterTest {
+
     @Test
+    @DisplayName("convert string with 'today' keyword correctly")
     void convertTodayStringCorrectly() {
+        LocalDate today = LocalDate.of(2018, 9, 1);
         LocalDateTime result = DateTimeConverter.convertToDateFromString("today 1:00 pm",
-                LocalDate.of(2018, 9, 1));
-        assertEquals(result, LocalDateTime.of(2018, 9, 1, 13, 0));
+                today);
+        assertEquals(result,
+                LocalDateTime.of(2018, 9, 1, 13, 0),
+                () -> "Failed to convert 'today' string to a expected date time, today passed was: " + today
+        );
     }
 
     @Test
     void convertCorrectPatterToDateTime() {
-        LocalDateTime result = DateTimeConverter.convertToDateFromString("9/2/2018 1:00 pm",
-                LocalDate.of(2018, 9, 1));
-        assertEquals(result, LocalDateTime.of(2018, 9, 2, 13, 0));
+        LocalDate today = LocalDate.of(2018, 9, 1);
+        LocalDateTime result = DateTimeConverter.convertToDateFromString("9/2/2018 1:00 pm", today);
+
+        assertEquals(result,
+                LocalDateTime.of(2018, 9, 2, 13, 0),
+                () -> "Failed to convert 'today' string to a expected date time, today passed was: " + today
+        );
     }
 
     @Test
