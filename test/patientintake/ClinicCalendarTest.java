@@ -8,13 +8,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ClinicCalendarShould {
+class ClinicCalendarTest {
 
    private ClinicCalendar calendar;
 
@@ -34,12 +35,14 @@ class ClinicCalendarShould {
       assertEquals(1, appointments.size());
 
       PatientAppointment enteredAppt = appointments.get(0);
-      assertEquals("Jim", enteredAppt.getPatientFirstName());
-      assertEquals("Weaver", enteredAppt.getPatientLastName());
-      assertSame(Doctor.avery, enteredAppt.getDoctor());
-      assertEquals("9/1/2018 02:00 PM",
-         enteredAppt.getAppointmentDateTime()
-                 .format(DateTimeFormatter.ofPattern("M/d/yyyy hh:mm a", Locale.US)));
+      // several assertions but logicaly just one: the user is correct
+      assertAll(
+           () -> assertEquals("Jim", enteredAppt.getPatientFirstName()),
+           () -> assertEquals("Weaver", enteredAppt.getPatientLastName()),
+           () -> assertSame(Doctor.avery, enteredAppt.getDoctor()),
+           () -> assertEquals("9/1/2018 02:00 PM", enteredAppt.getAppointmentDateTime()
+              .format(DateTimeFormatter.ofPattern("M/d/yyyy hh:mm a", Locale.US)))
+      );
    }
 
    @Test
