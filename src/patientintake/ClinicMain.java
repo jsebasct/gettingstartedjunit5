@@ -1,7 +1,5 @@
 package patientintake;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -88,8 +86,7 @@ public class ClinicMain {
          System.out.println("Weight in pounds");
          int pounds = scanner.nextInt();
 
-         double BMI = (double) ((pounds * 703) / (inches * inches));
-         double roundedTwoPlaces = new BigDecimal(BMI).setScale(2, RoundingMode.HALF_UP).doubleValue();
+         double roundedTwoPlaces = BMICalculator.calculateBMI(inches, pounds);
          appt.setBMI(roundedTwoPlaces);
          System.out.println("Set BMI to " + roundedTwoPlaces + "\n");
       } else {
