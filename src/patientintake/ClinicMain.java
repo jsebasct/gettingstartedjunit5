@@ -1,7 +1,12 @@
 package patientintake;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class ClinicMain {
 
@@ -68,4 +73,42 @@ public class ClinicMain {
       System.out.println("\n\n");
    }
 
+   private static void performHeightWeight(Scanner scanner) {
+      scanner.nextLine();
+      System.out.println("\n\n Enter patient height and wiehgt for today appointment");
+      System.out.println(" Patient last name");
+      String lastName = scanner.nextLine();
+      System.out.println("Patient First Name:");
+      String firstName = scanner.nextLine();
+
+      PatientAppointment appt = findPatientAppointment(lastName, firstName).orElse(null);
+      if (appt != null) {
+         System.out.println("Height in inches");
+         int inches = scanner.nextInt();
+         System.out.println("Weight in pounds");
+         int pounds = scanner.nextInt();
+
+         double BMI = (double) ((pounds * 703) / (inches * inches));
+         double roundedTwoPlaces = new BigDecimal(BMI).setScale(2, RoundingMode.HALF_UP).doubleValue();
+         appt.setBMI(roundedTwoPlaces);
+         System.out.println("Set BMI to " + roundedTwoPlaces + "\n");
+      } else {
+         System.out.println("Patient not found\n\n");
+      }
+   }
+
+   private static Optional<PatientAppointment> findPatientAppointment(String lastName, String firstName) {
+      List<PatientAppointment> filteredPatient = calendar.getAppointments()
+              .stream()
+              .filter(appointment ->
+                           appointment.getPatientLastName().equals(lastName)
+                                   && appointment.getPatientFirstName().equals(firstName))
+              .collect(Collectors.toList());
+
+      if (filteredPatient.isEmpty()) {
+         return Optional.empty();
+      } else {
+         return Optional.of(filteredPatient.get(0));
+      }
+   }
 }
